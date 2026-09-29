@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15-alpine
+    container_name: postgres-d2
+    environment:
+      POSTGRES_DB: yerscompany
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yerscompany
+    ports:
+      - "5433:5432"
+    networks:
+      - red-ecommerce
+
+  backend:
+    build: .
+    container_name: algun-nombre
+    ports:
+      - "8097:8097"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/yerscompany
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=yerscompany
+    depends_on:
+      - postgres
+    networks:
+      - red-ecommerce
+
+networks:
+  red-ecommerce:
+    driver: bridge
